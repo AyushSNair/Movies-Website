@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
-import axios from 'axios'; // Import axios
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Card } from "../components/UI/Card.jsx";
 
 const Movies = () => {
+    const [data, setData] = useState([]);
     const API = "https://www.omdbapi.com/?i=tt3896198&apikey=1c12799f&s=titanic&page=1";
 
     const getMovieData = async () => {
         try {
-            const res = await axios.get(API); // Make sure axios is used properly
-            console.log(res.data.Search); // Log the response data
+            const res = await axios.get(API);
+            setData(res.data.Search); // Extract movie data from the API response
         } catch (error) {
             console.error("Error fetching movie data:", error);
         }
@@ -18,7 +20,19 @@ const Movies = () => {
     }, []);
 
     return (
-        <div>Movies</div>
+        <div className="container">
+            <ul className="grid grid-four--cols">
+                {
+                    data.length > 0 ? (
+                        data.map((curElem) => (
+                            <Card key={curElem.imdbID} movieData={curElem} />
+                        ))
+                    ) : (
+                        <p>Loading movies...</p>
+                    )
+                }
+            </ul>
+        </div>
     );
 };
 
